@@ -1,2 +1,2 @@
-# MeotodSimbolico
+# MetodoSimbolico
 Laboratorio de método símbolico
