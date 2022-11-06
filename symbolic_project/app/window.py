@@ -7,13 +7,13 @@ from tkinter import PhotoImage
 from tkinter import Entry
 from tkinter import Text
 from tkinter import Canvas
-from tkinter import messagebox as MessageBox
+from tkinter import messagebox as Messagebox
 from tkinter.ttk import Style as TStyle
 from tkinter.ttk import Notebook as TNotebook
 from tkinter.ttk import Combobox as TCombobox
 from symbolic_project.constants import PATH
-from symbolic_project.calculus import symbolic_method
-from symbolic_project.calculus import fractal
+from symbolic_project.project import fractal
+from symbolic_project.project import symbolic_method
 
 __back_color = 'white'
 __fore_color = 'black'
@@ -21,7 +21,8 @@ __theme_button: Button
 __style: TStyle
 __moon_icon: PhotoImage
 __widgets: list
-
+__options_1 : TCombobox
+__options_2 : TCombobox
 
 def run():
     global __widgets
@@ -92,8 +93,8 @@ def run():
     symbolic_book.pack(expand=True, fill='both')
     __widgets.append(symbolic_book)
 
-    symbolic_1_list = ['']
-    symbolic_1: Frame = __frame(parent=symbolic_book)
+    symbolic_1_list = ['Cadenas binarias de tamaño n sin subcadenas 00 y 11', 'Cadenas ternarias de tamaño n sin la subcadena 00', 'Cadenas cuaternarias de tamaño n con caracteres en orden creciente', 'Cadenas ternarias de tamaño n sin la subcadena 22', 'Cadenas ternarias sin la subcadena 22']
+    symbolic_1: Frame = __symbolic_frame(parent=symbolic_book, title="Metodo simbólico: Parte 1", options=symbolic_1_list)
     symbolic_1.pack(expand=True, fill='both')
     __widgets.append(symbolic_1)
 
@@ -275,30 +276,37 @@ def __go_to(target_frame: Frame, forget_frame: Frame) -> None:
     target_frame.pack(expand=True, fill='both')
 
 
-def __symbolic_frame(parent: Widget, title: str, options: TCombobox, function: callable) -> Frame:
+def __symbolic_frame(parent: Widget, title: str, options: list) -> Frame:
     frame: Frame = __frame(parent)
     frame.rowconfigure(index=[0, 1, 2, 3], weight=1)
     frame.columnconfigure(index=[0], weight=1)
     frame.pack(expand=True, fill='both')
 
-    title: Label = __label(parent=frame, text="Elija una de las siguientes cadenas:")
+    title: Label = __title_label(parent=frame, text="Metodo simbolico: Parte 1")
     title.grid(column=0, row=0)
 
-    combo: TCombobox = TCombobox(state="readonly", values=options)
-    combo.grid(column=1, row=0)
+    combo_frame: Frame = __frame(parent=frame)
+    combo_frame.grid(column=0, row=1, sticky='ew', padx=70)
+
+    label: Label = __label(parent=combo_frame, text="Elija una de las siguientes cadenas:")
+    label.pack()
+
+    combo: TCombobox = TCombobox(master=combo_frame, state="readonly", values=options, font=("Dubai", 10), justify='center', width=100)
+    combo.bind('<<ComboboxSelected>>',option_changed)
+    combo.pack(expand='false', pady=10)
 
     frame_entry = __frame(parent=frame)
-    frame_entry.grid(column=2, row=1)
+    frame_entry.grid(column=0, row=2)
 
-    #label_entry: Label = __label(parent=frame_entry, text=f"Inserte el tamaño de n para generar las cadenas: ")
-    #label_entry.pack()
+    label: Label = __label(parent=frame_entry, text=f"Inserte el tamaño de n para las cadenas: ")
+    label.pack()
 
     entry: Entry = __entry(parent=frame_entry)
     entry.pack(pady=4, ipadx=3, ipady=3)
 
-    button: Button = __button(parent=frame, command=lambda: execute(print, entry.get()), text='Calcular')
+    button: Button = __button(parent=frame, command=lambda: execute(print, ), text='Calcular')
     button.configure(font=('Consolas', 12, 'bold'))
-    button.grid(column=3, row=2)
+    button.grid(column=0, row=3)
 
     return frame
 
@@ -333,4 +341,15 @@ def execute(function: callable, *arguments):
         int(*arguments)
         function(*arguments)
     except:
-        MessageBox.showerror("ERROR!", "Debe insertar un entero.")
+        Messagebox.showerror("ERROR!", "Debe insertar un entero.")
+
+def option_changed(event):
+    option : str = *args.get()
+    if option.__contains__('n'):
+        #print('enabled')
+        entry.configure(estate='disabled')
+        print('enabled')
+    else:
+        print('disabled')
+        entry.configure(estate='enabled')
+    
