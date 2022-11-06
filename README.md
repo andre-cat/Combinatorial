@@ -1,2 +1,2 @@
-# MetodoSimbolico
-Laboratorio de método símbolico
+# SymbolicProject
+Symbolic method and fractals project
