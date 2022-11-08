@@ -1,0 +1,17 @@
+def get_list_1() -> dict:
+    return {
+        '2N_E[00,01]': '1. Cadenas binarias de tamaño n sin subcadenas 00 y 01.',
+        '2N_E[00,11]': '2. Cadenas binarias de tamaño n sin subcadenas 00 y 11.',
+        '3N_E[00]': '3. Cadenas ternarias de tamaño n sin la subcadena 00.',
+        '4N_E[C]': '4. Cadenas cuaternarias de tamaño n con caracteres crecientes.',
+        '3N_E[22]': '5. Cadenas ternarias de tamaño n sin la subcadena 22.',
+        '3T_E[22]': '6. Cadenas ternarias sin la subcadena 22.'
+    }
+
+
+def get_list_2() -> dict:
+    return {
+        '2N_E[000]': '1. Cadenas binarias de tamaño n sin subcadenas 000.',
+        '2N_E[000,010]': '2. Cadenas binarias de tamaño n sin subcadenas 000 y 010.',
+        '3N_E[000]': '3. Cadenas ternarias de tamaño n sin la subcadena 000.',
+    }

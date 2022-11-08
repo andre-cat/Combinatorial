@@ -1,19 +1,19 @@
-def generate(base: int, length: int, exclutions: list):
+def generate_n(base: int, length: int, exclutions: list):
     strings: list = []
     chars = [None] * length
-    __generate(strings, base, length, exclutions, chars, 0)
+    __generate_n(strings, base, length, exclutions, chars, 0)
     return strings;
 
-def __generate(strings : list, base: int, length: int, exclutions: list, chars: list, index: int):
+def __generate_n(strings : list, base: int, length: int, exclutions: list, chars: list, index: int):
 
     if index < len(chars):
         for char in range(0, base):
             chars[index] = char
-            __generate(strings, base, length, exclutions, chars, index + 1)
+            __generate_n(strings, base, length, exclutions, chars, index + 1)
     else:
         string: str = ''
         for index in range(0, length):
-            string = f"{string}{chars[index]}"
+            string = f'{string}{chars[index]}'
 
         excluded_string: bool = False
         try:
