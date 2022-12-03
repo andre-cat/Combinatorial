@@ -1,0 +1,22 @@
+    combobox: TCombobox = TCombobox(master=frame, state='readonly', values=list(options.values()), font=('Dubai', 13), justify='center', width=60)
+    combobox.set('Elija una de las siguientes cadenas:')
+    combobox.grid(column=0, row=1, padx=50)
+
+def __val_combo(combobox: TCombobox):
+    return combobox.current() == -1
+
+def __run_symbolic(combobox: TCombobox, entry: Entry, options: dict):
+    try:
+        if __val_combo(combobox):
+            raise Error('Debe elegir una opción en el combobox.')
+
+        if __val_entry(entry):
+            raise Error('Debe digitar un número.')
+
+        code: str = list(options.keys())[combobox.current()].replace("_", entry.get())
+        #symbolicWindow = SymbolicWindow(code, __back_color, __fore_color)
+
+    except Error as e:
+        Messagebox.showerror('Error!', str(e))
+    except Exception as e:
+        print(f'{__file__}: {str(e)}')

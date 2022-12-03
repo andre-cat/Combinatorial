@@ -14,11 +14,10 @@ from tkinter import messagebox as Messagebox
 from tkinter.ttk import Style as TStyle
 from tkinter.ttk import Notebook as TNotebook
 from tkinter.ttk import Combobox as TCombobox
-from symbolic_project.commons import Error
-from symbolic_project.commons import PATH
-from symbolic_project.project import fractal  # type: ignore
-from symbolic_project.project.symbolic_method import problems  # type: ignore
-from symbolic_project.app.symbolic_window import SymbolicWindow  # type: ignore
+from combinatorial.commons import Error
+from combinatorial.fractal import fractal  
+from combinatorial.symbolic_method import problems  
+from combinatorial.visual.symbolic import SymbolicWindow  
 
 __back_color = 'white'
 __fore_color = 'black'
@@ -70,12 +69,10 @@ def run():
                              'TCombobox': {'configure': {'selectbackground': __sec_color_1, 'selectforeground': 'black', 'fieldbackground': __sec_color_2, 'bordercolor ': 'black', 'background': __sec_color_1, 'arrowcolor': __sec_color_2}}}
                          )
 
-    toggle_bar()
 
     global __theme_button
     __theme_button = Button(master=window, command=lambda: __change_theme(), border=0)
     __theme_button.pack(side='top', expand=False, anchor='e', padx=10, pady=10)
-    toggle_icon()
 
     frame: Frame = __frame(parent=window)
     frame.pack(side='top', expand=True, fill='both')
@@ -104,16 +101,19 @@ def run():
     symbolic_book.pack(expand=True, fill='both')
     __widgets.append(symbolic_book)
 
+    symbolic_page : Frame = Frame(master=symbolic_book,bg='blue')
+    symbolic_page.pack(expand=True,fill='both')
+
     symbolic_1: Frame = __symbolic_frame(parent=symbolic_book, text='Método simbólico: Parte 1', options=problems.get_list_1())
     symbolic_1.pack(expand=True, fill='both')
     __widgets.append(symbolic_1)
 
-    symbolic_2: Frame = __frame(parent=symbolic_book)
-    symbolic_2.pack(expand=True, fill='both')
+    symbolic_2: Frame = Frame(master=symbolic_page, bg='white')
+    symbolic_2.pack(expand=True, fill='both',padx=20)
     __widgets.append(symbolic_2)
 
     symbolic_book.add(symbolic_1, text='Parte 1')
-    symbolic_book.add(symbolic_2, text='Parte 2')
+    symbolic_book.add(symbolic_page, text='Parte 2')
 
     fractal_frame: Frame = __frame(parent=frame)
     __widgets.append(fractal_frame)
@@ -202,6 +202,9 @@ def run():
 
     window.mainloop()
 
+def __move(_from: Frame, _to: Frame) -> None:
+        _to.pack_forget()
+        _from.pack(expand=True, fill='both')
 
 def __change_theme() -> None:
     global __back_color
@@ -216,36 +219,19 @@ def __change_theme() -> None:
     for widget in __widgets:
         if widget.__class__.__name__ == 'Entry':
             try:
-                widget.configure(bg=__sec_color_1, fg=__sec_color_2, selectforeground=__back_color)  # type: ignore
+                widget.configure(bg=__sec_color_1, fg=__sec_color_2, selectforeground=__back_color) 
             except (Exception):
                 pass
         else:
             try:
-                widget.configure(bg=__back_color)  # type: ignore
+                widget.configure(bg=__back_color)  
             except (Exception):
                 pass
 
             try:
-                widget.configure(fg=__fore_color)  # type: ignore
+                widget.configure(fg=__fore_color) 
             except (Exception):
                 pass
-
-    toggle_bar()
-    toggle_icon()
-
-
-def toggle_icon() -> None:
-    global __moon_icon
-    global __theme_button
-
-    __moon_icon = PhotoImage(file=PATH + f'/resources/images/{__fore_color}_moon.png').zoom(1).subsample(8)
-    __theme_button.configure(bg=__back_color, activebackground=__fore_color, image=__moon_icon)
-
-
-def toggle_bar() -> None:
-    global __style
-    __style.theme_use(__back_color)
-
 
 def __frame(parent: Widget) -> Frame:
     frame: Frame = Frame(master=parent, bg=__back_color)
@@ -260,19 +246,19 @@ def __label(parent: Widget, text: str) -> Label:
 
 
 def __title_label(parent: Widget, text: str) -> Label:
-    label: Label = Label(master=parent, bg=__back_color, fg=__fore_color, font=('Lucida Sans Typewriter', 30), anchor='center', text=text)
+    label: Label = Label(master=parent, bg=__back_color, fg=__fore_color, font=('OCR A Extended', 30), anchor='center', text=text)
     __widgets.append(label)
     return label
 
 
 def __button(parent: Widget, text: str, command: Callable) -> Button:
-    button: Button = Button(master=parent, bg=__back_color, fg=__fore_color, text=text, command=command)
+    button: Button = Button(master=parent, bg=__back_color, fg=__fore_color, text='OCR A Extended', command=command)
     __widgets.append(button)
     return button
 
 
 def __menu_button(parent: Widget, text: str, command: Callable) -> Button:
-    button: Button = Button(master=parent, bg=__back_color, fg=__fore_color, font=('Lucida Sans', 18), text=text, command=command)
+    button: Button = Button(master=parent, bg=__back_color, fg=__fore_color, font=('OCR A Extended', 18), text=text, command=command)
     __widgets.append(button)
     return button
 
@@ -293,11 +279,10 @@ def __go_to(target_frame: Frame, forget_frame: Frame) -> None:
     forget_frame.pack_forget()
     target_frame.pack(expand=True, fill='both')
 
-
 def __symbolic_frame(parent: Widget, text: str, options: dict) -> Frame:
     frame: Frame = __frame(parent)
-    frame.rowconfigure(index=[0, 2, 3], weight=1)  # type: ignore
-    frame.columnconfigure(index=[0], weight=1)  # type: ignore
+    frame.rowconfigure(index=[0, 2, 3], weight=1) # type: ignore 
+    frame.columnconfigure(index=[0], weight=1) # type: ignore
     frame.pack(expand=True, fill='both')
 
     title: Label = __title_label(parent=frame, text=text)
@@ -316,7 +301,7 @@ def __symbolic_frame(parent: Widget, text: str, options: dict) -> Frame:
     entry: Entry = __entry(parent=frame_entry)
     entry.pack(pady=4, ipadx=3, ipady=3)
 
-    button: Button = __button(parent=frame, command=lambda: __val_symbolic(combobox, entry, options), text='Calcular')
+    button: Button = __button(parent=frame, command=lambda: __run_symbolic(combobox, entry, options), text='Calcular')
     button.configure(font=('Consolas', 12, 'bold'))
     button.grid(column=0, row=3)
 
@@ -331,16 +316,16 @@ def __val_entry(entry: Entry):
     return regex.search('\D', entry.get()) != None
 
 
-def __val_symbolic(combobox: TCombobox, entry: Entry, options: dict):
+def __run_symbolic(combobox: TCombobox, entry: Entry, options: dict):
     try:
         if __val_combo(combobox):
-            raise Exception('Debe elegir una opción en el combobox.')
+            raise Error('Debe elegir una opción en el combobox.')
 
         if __val_entry(entry):
-            raise Exception('Debe digitar un número.')
+            raise Error('Debe digitar un número.')
 
-        code :str = list(options.keys())[combobox.current()].replace("_",entry.get())
-        symbolicWindow = SymbolicWindow(code)
+        code: str = list(options.keys())[combobox.current()].replace("_", entry.get())
+        #symbolicWindow = SymbolicWindow(code, __back_color, __fore_color)
 
     except Error as e:
         Messagebox.showerror('Error!', str(e))
@@ -350,8 +335,8 @@ def __val_symbolic(combobox: TCombobox, entry: Entry, options: dict):
 
 def __fractal_frame(parent: Widget, text: str, function: Callable) -> Frame:
     frame: Frame = __frame(parent)
-    frame.rowconfigure(index=[0, 1, 2], weight=1)  # type: ignore
-    frame.columnconfigure(index=[0], weight=1)  # type: ignore
+    frame.rowconfigure(index=[0, 1, 2], weight=1) # type: ignore
+    frame.columnconfigure(index=[0], weight=1) # type: ignore
     frame.pack(expand=True, fill='both')
 
     title: Label = __title_label(parent=frame, text=text)
