@@ -1,12 +1,12 @@
+from combinatorial.visual.theme import Theme
+from combinatorial.visual.widget import Widgeter
 from combinatorial.visual.window import Window
 
-Window().run()
+white_theme = Theme()
+black_theme = Theme(back='black', fore='white', aux1='SlateGrey', aux2='red', icon='\U0000263E')
 
-#import tkinter as tk
-#import tkinter.font as tkFont   
-#app = tk.Tk()
-#app.geometry("600x500")
-#pixel = tk.PhotoImage(width=1, height=1)
-#buttonExample1 = tk.Button(app,bg='blue',fg='white',text='\u2190',width=30,height=30,font=('Cascadia Code', 30),image=pixel,compound="c")
-#buttonExample1.pack(side=tk.LEFT)
-#app.mainloop()
+themes: list[Theme] = [white_theme, black_theme]
+
+Widgeter().themes = themes
+
+Window().run()

@@ -1,0 +1,136 @@
+    def __symbolic_frame(self, master: Widget) -> Frame:
+        frame: Frame = Frame(master=master)
+        frame.rowconfigure(index=[0, 1, 2, 3], weight=1)  # type: ignore
+        frame.columnconfigure(index=[0], weight=1)  # type: ignore
+        frame.pack(expand=True, fill='both')
+
+        title: Title = Title(master=frame, text='Combinatoria')
+        title.grid(row=0, column=0)
+
+        entry_frame: Frame = Frame(master=frame)
+        entry_frame.rowconfigure(index=[0, 1, 2, 3], weight=1)  # type: ignore
+        entry_frame.columnconfigure(index=[0, 1], weight=1)  # type: ignore
+        entry_frame.grid(row=1, column=0)
+
+        base_label: Label = Label(master=entry_frame, text='Base:')
+        base_label.grid(row=0, column=0, sticky='ew', padx=5)
+
+        #base_balloon = txBalloon(master=parent)
+        #base_balloon.bind_widget(base_label, balloonmsg='Base de caracteres.\nEjemplo: base 2 para cadenas de ceros y unos (0 y 1).')
+
+        base_entry: Entry = Entry(master=entry_frame)
+        base_entry.grid(row=0, column=1, sticky='w', pady=5, ipady=3)
+
+        size_label: Label = Label(master=entry_frame, text='n:')
+        size_label.grid(row=1, column=0, sticky='ew', padx=5)
+
+        #size_balloon = txBalloon(master=parent)
+        #size_balloon.bind_widget(size_label, balloonmsg=f"La cantidad n de caracteres de la cadena.\nEjemplo: n = 4 para {chr(39)}0101{chr(39)}")
+
+        size_entry: Entry = Entry(master=entry_frame)
+        size_entry.grid(row=1, column=1, sticky='w', pady=5, ipady=3)
+
+        bans_label: Label = Label(master=entry_frame, text='Exc:')
+        bans_label.grid(row=2, column=0, sticky='ew', padx=5)
+
+        #bans_balloon = txBalloon(master=frame)
+        #bans_balloon.bind_widget(bans_label, balloonmsg=f'Subcadenas excluidas de la combinatoria.\nEjemplo: para una cadena binaria de 2 caracteres exceptuando a {chr(34)}00{chr(34)} se obtendrían 01, 10, 11.')
+
+        #bans_combo: ttCombobox(master=entry_frame, state='readonly', values=['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'], font=('Dubai', 13), justify='center', width=4)
+        #bans_combo.current(0)
+        #bans_combo.grid(row=2, column=1, pady=5, ipady=3)
+
+        bans_frame: Frame = Frame(master=frame)
+        bans_frame.grid(row=2, column=0, sticky='nsew')
+
+        bans_combo.bind('<<ComboboxSelected>>', lambda event, combo=bans_combo, frame=bans_frame: cls.__create_box(event, combo, frame))  # type: ignore
+
+        button: Button = Button(master=frame, command=lambda: Window.__run_symbolic(base_entry, size_entry, bans_frame), text='Calcular')
+        button.configure(font=('Consolas', 12, 'bold'))
+        button.grid(row=3, column=0)
+
+        return frame
+
+    def __create_box(self, event: Callable, combobox, frame: Frame) -> None:
+        if Window.__val_combo(combobox):
+            if len(frame.winfo_children()) > 0:
+                #self.__widgeter.widgets.remove(frame.winfo_children()[0])
+                frame.winfo_children()[0].destroy()
+
+            sub_frame = Frame(master=frame)
+            sub_frame.pack()
+
+            sub_frame.rowconfigure(index=[0], weight=1)  # type: ignore
+            for index in range(int(combobox.current())):
+                sub_frame.columnconfigure(index=index)  # type: ignore
+
+                entry = Entry(master=sub_frame, width=4)
+                entry.insert(0, '')
+                entry.grid(row=0, column=index, padx=10, ipady=5, sticky='ns')
+
+    def __run_symbolic(self, base_entry: Entry, size_entry: Entry, bans_frame: Frame) -> None:
+        try:
+            if Window.__is_empty(base_entry.get()):
+                raise commons.Error('Debe insertar un número de base.')
+            elif not Window.__is_number(base_entry.get()):
+                raise commons.Error('Debe insertar un número válido para base.')
+
+            if Window.__is_empty(size_entry.get()):
+                raise commons.Error('Debe insertar un número de tamaño.')
+            elif not Window.__is_number(size_entry.get()):
+                raise commons.Error('Debe insertar un número válido para tamaño.')
+
+            bans: list[str] = []
+            if len(bans_frame.winfo_children()) > 0:
+                if len(bans_frame.winfo_children()[0].winfo_children()) > 0:
+
+                    for wid in bans_frame.winfo_children()[0].winfo_children():
+                        if type(wid) == Entry:
+                            if Window.__is_empty(wid.get()):
+                                bans.append(wid.get())
+                            else:
+                                raise commons.Error('Debe llenar todas las casillas de exclusión.')
+
+            combinatory: Combinatory = Combinatory(base=int(base_entry.get()), size=int(size_entry.get()), bans=bans)
+
+            symbolic_window = SymbolicWindow(combinatory=combinatory)
+        except commons.Error as e: ...
+            #msg = Message(self.__root, text = e)
+            #msg.config(bg='lightgreen', font=('times', 24, 'italic'))
+            #msg.pack()
+        except Exception as e:
+            print(f'{__file__}:\n{str(e)}\n{sys.exc_info()[-1].tb_lineno}')  # type: ignore
+
+    def __fractal_frame(cls, parent: Widget, title: str, photo_path: str, function: Callable) -> Frame:
+        frame: Frame = Frame(parent)
+        frame.rowconfigure(index=[0, 1, 2], weight=1)  # type: ignore
+        frame.columnconfigure(index=[0, 1], weight=1)  # type: ignore
+        frame.pack(expand=True, fill='both')
+
+        __title: Label = cls.__widgeter.title(master=frame, text=title)
+        __title.grid(column=0, row=0)
+
+        frame_entry = Frame(master=frame)
+        frame_entry.grid(column=0, row=1)
+
+        #photo = PhotoImage(file = constants.PATH + f'/resources/images/{photo_path}')
+
+        #canvas = Canvas(frame, bg=frame['bg'], width=photo.width(), height=photo.height(), bd=0, highlightthickness=0, relief="flat")
+        #canvas.create_image(photo.width() / 2, photo.height() / 2, image=photo, anchor="center")
+        #canvas.grid(row=1, column=0)
+
+        label: Label = Label(master=frame_entry, text=f'Inserte n (iteraciones): ')
+        label.pack()
+
+        entry: Entry = Entry(master=frame_entry)
+        entry.pack(pady=4, ipadx=3, ipady=3)
+
+        button: Button = cls.__widgeter.button(master=frame, command=lambda: print(function, entry.get()), text='Calcular')
+        button.configure(font=('Consolas', 12, 'bold'))
+        button.grid(column=0, row=2)
+
+        return frame
+
+    @staticmethod
+    def __val_combo(combobox) -> bool:
+        return combobox.current() != -1

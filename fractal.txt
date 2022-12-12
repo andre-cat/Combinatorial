@@ -1,0 +1,34 @@
+        fractal_back_button: Button = BackButton(master=fractal_framework, go_from=fractal_framework, to=problem_frame)
+        fractal_back_button.pack(side='top', expand=False, anchor='w')
+
+        box1 = Button(master=fractal_tab_box, command=lambda: print('a'))
+        box1.grid(row=0, column=0, sticky='nsew')
+        box1.configure(bd=0)
+
+        box2 = Frame(master=fractal_tab_box, bg='orange', h=20)
+        box2.grid(row=0, column=1, sticky='nsew')
+
+        box3 = Button(master=fractal_tab_box, command=lambda: print('b'))
+        box3.grid(row=0, column=2, sticky='nsew')
+        box3.configure(bd=0)
+
+        # box1.pack(anchor='nw',expand=False)
+        #box2.pack(anchor='nw',expand=True, fill='x')
+        # box3.pack(anchor='nw',expand=False)
+        #!Test
+
+        """
+        fractal_book: ttNotebook = ttNotebook(master=fractal_subframe)
+        fractal_book.pack(expand=True, fill='both')
+        
+        fractal_tab_1 : Frame = cls.__fractal_frame(parent=fractal_book,title='A',photo_path='sierpinski_carpet.png',function=Fractal.sierpinski_carpet)
+
+        fractal_book.add(fractal_tab_1, text='Sierpinski Carpet')
+        #fractal_book.add(fractal_2, text='Sierpinski Sieve (60)')
+        #fractal_book.add(fractal_3, text='Sierpinski Sieve (90)')
+        #fractal_book.add(fractal_4, text='Sierpinski Sieve (102)')
+        #fractal_book.add(fractal_5, text='H')
+        #fractal_book.add(fractal_6, text='Haferman Carpet')
+        #fractal_book.add(fractal_7, text='Cantor Square')
+        #fractal_book.add(fractal_8, text='Box')
+        """
